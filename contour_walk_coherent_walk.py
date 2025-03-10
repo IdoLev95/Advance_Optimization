@@ -38,12 +38,16 @@ def go_on_contour_coherent(x_init, f, f_grad, eta, T):
     """
     x = np.copy(x_init)
     d = np.random.randn(*x.shape)
+    all_locs = list()
+    all_values = list()
     for t in range(T):
         grad = f_grad(x)
         x, d_proj = act(grad,d,x,eta)
         d = d_proj
+        all_locs.append(x)
+        all_values.append(f(x))
         # print(f"Step {t}: f(x) = {f(x)}")
-    return x
+    return x,all_locs,all_values
 
 
 # Example usage:
@@ -66,7 +70,9 @@ if __name__ == "__main__":
     eta = 0.000001  # step size
     T = int(L / eta)  # number of steps
 
-    final_x = go_on_contour_coherent(x_init, f, f_grad, eta, T)
+    final_x,all_locs,all_values = go_on_contour_coherent(x_init, f, f_grad, eta, T)
     print("Final x:", final_x)
     print("Distance from origin:", np.linalg.norm(final_x-x_init))
     print(f"At the beginning f(x_init) = {f(x_init)} and in the end f(final_x) = {f(final_x)}")
+
+
